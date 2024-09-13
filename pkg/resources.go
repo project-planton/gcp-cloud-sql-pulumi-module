@@ -7,14 +7,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type ResourceStack struct {
-	Input     *gcpcloudsql.GcpCloudSqlStackInput
-	GcpLabels map[string]string
-}
-
-func (s *ResourceStack) Resources(ctx *pulumi.Context) error {
+func Resources(ctx *pulumi.Context, stackInput *gcpcloudsql.GcpCloudSqlStackInput) error {
 	//create gcp provider using the credentials from the input
-	_, err := pulumigoogleprovider.Get(ctx, s.Input.GcpCredential)
+	_, err := pulumigoogleprovider.Get(ctx, stackInput.GcpCredential)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup gcp provider")
 	}
