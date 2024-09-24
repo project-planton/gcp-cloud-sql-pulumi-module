@@ -1,117 +1,86 @@
-Here are a few example YAML configurations for the **MicroserviceKubernetes** API that illustrate different use cases. These examples highlight how to configure environment variables, ports, and secrets using the API resource definition.
+Here are a few examples for the `GcpCloudSql` API resource, following a similar format as the ones you provided for `MicroserviceKubernetes`.
 
-## Create using CLI
-
-After creating your YAML file using one of the examples below, apply it using the following command:
-
-```shell
-planton apply -f <yaml-path>
-```
-
-## Basic Example
+### Example 1: Basic Google Cloud SQL Instance
 
 ```yaml
 apiVersion: code2cloud.planton.cloud/v1
-kind: MicroserviceKubernetes
+kind: GcpCloudSql
 metadata:
-  name: todo-list-api
+  name: my-sql-instance
 spec:
-  environmentInfo:
-    envId: my-org-prod
-  version: main
-  container:
-    app:
-      image:
-        repo: nginx
-        tag: latest
-      ports:
-        - appProtocol: http
-          containerPort: 8080
-          isIngressPort: true
-          servicePort: 80
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 2000m
-          memory: 2Gi
+  gcp_credential_id: my-gcp-credentials
+  gcp_project_id: my-gcp-project
+  instance:
+    database_version: POSTGRES_13
+    settings:
+      tier: db-f1-micro
+      backup_configuration:
+        enabled: true
+      activation_policy: ALWAYS
 ```
 
-## Example with Environment Variables
-
-In this example, environment variables are used to define values such as `DATABASE_NAME`.
+### Example 2: Google Cloud SQL Instance with Environment Variables
 
 ```yaml
 apiVersion: code2cloud.planton.cloud/v1
-kind: MicroserviceKubernetes
+kind: GcpCloudSql
 metadata:
-  name: todo-list-api
+  name: ecommerce-db
 spec:
+  gcp_credential_id: my-gcp-credentials
+  gcp_project_id: my-gcp-project
+  instance:
+    database_version: MYSQL_8_0
+    settings:
+      tier: db-n1-standard-1
+      storage_auto_resize: true
+      backup_configuration:
+        enabled: true
+      activation_policy: ALWAYS
   environmentInfo:
-    envId: my-org-prod
-  version: main
+    envId: prod
   container:
     app:
       env:
         variables:
-          DATABASE_NAME: todo
-      image:
-        repo: nginx
-        tag: latest
-      ports:
-        - appProtocol: http
-          containerPort: 8080
-          isIngressPort: true
-          name: rest-api
-          networkProtocol: TCP
-          servicePort: 80
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 2000m
-          memory: 2Gi
+          DATABASE_NAME: ecommerce
+          REGION: us-central1
 ```
 
-## Example with Environment Secrets
-
-This example demonstrates how to manage sensitive environment secrets via [GCP Secrets Manager](https://buf.build/plantoncloud/planton-cloud-apis/docs/main:cloud.planton.apis.code2cloud.v1.gcp.gcpsecretsmanager). The `DATABASE_PASSWORD` is managed through a secret in GCP.
+### Example 3: Google Cloud SQL Instance with Secrets
 
 ```yaml
 apiVersion: code2cloud.planton.cloud/v1
-kind: MicroserviceKubernetes
+kind: GcpCloudSql
 metadata:
-  name: todo-list-api
+  name: secure-sql-instance
 spec:
-  environmentInfo:
-    envId: my-org-prod
-  version: main
+  gcp_credential_id: my-gcp-credentials
+  gcp_project_id: my-gcp-project
+  instance:
+    database_version: POSTGRES_12
+    settings:
+      tier: db-n1-standard-1
+      backup_configuration:
+        enabled: true
+      activation_policy: ALWAYS
   container:
     app:
       env:
         secrets:
-          # value before dot 'gcpsm-my-org-prod-gcp-secrets' is the id of the gcp-secret-manager resource on planton-cloud
-          # value after dot 'database-password' is one of the secrets list in 'gcpsm-my-org-prod-gcp-secrets'
-          DATABASE_PASSWORD: ${gcpsm-my-org-prod-gcp-secrets.database-password}
+          DATABASE_PASSWORD: ${gcpsm-my-org-prod-gcp-secrets.db-password}
         variables:
-          DATABASE_NAME: todo
-      image:
-        repo: nginx
-        tag: latest
-      ports:
-        - appProtocol: http
-          containerPort: 8080
-          isIngressPort: true
-          name: rest-api
-          networkProtocol: TCP
-          servicePort: 80
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 2000m
-          memory: 2Gi
+          DATABASE_NAME: secure_app
+```
 
+### Example 4: Minimal Google Cloud SQL Deployment
+
+```yaml
+apiVersion: code2cloud.planton.cloud/v1
+kind: GcpCloudSql
+metadata:
+  name: minimal-sql-instance
+spec:
+  gcp_credential_id: my-gcp-credentials
+  gcp_project_id: my-gcp-project
+```
