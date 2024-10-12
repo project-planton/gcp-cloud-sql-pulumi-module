@@ -1,10 +1,10 @@
 package main
 
 import (
-	gcpcloudsqlv1 "buf.build/gen/go/plantoncloud/project-planton/protocolbuffers/go/project/planton/provider/gcp/gcpcloudsql/v1"
+	gcpcloudsqlv1 "buf.build/gen/go/project-planton/apis/protocolbuffers/go/project/planton/provider/gcp/gcpcloudsql/v1"
 	"github.com/pkg/errors"
-	"github.com/plantoncloud/gcp-cloud-sql-pulumi-module/pkg"
-	"github.com/plantoncloud/pulumi-module-golang-commons/pkg/stackinput"
+	"github.com/project-planton/gcp-cloud-sql-pulumi-module/pkg"
+	"github.com/project-planton/pulumi-module-golang-commons/pkg/stackinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
